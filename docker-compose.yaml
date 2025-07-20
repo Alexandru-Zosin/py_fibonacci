@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/express:latest
+    container_name: oracle-db-api
+    ports:
+      - "1521:1521"
+    env_file: .env
+    environment:
+      ORACLE_PWD: ${ORACLE_PWD}
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    entrypoint: >
+      /bin/bash -c "
+        # substitute env vars into a real .sql
+        envsubst < /docker-entrypoint-initdb.d/init.sql.tpl \
+                > /docker-entrypoint-initdb.d/init.sql &&
+        # hand off to original entrypoint
+        exec /docker-entrypoint.sh oracle
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/${ORACLE_PWD}@localhost:1521/XEPDB1 || exit 1"]
+      interval: 30s
+      retries: 10
+
+  fibonacci-service:          # service name == container name (no override needed)
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fibonacci-service:latest
+    # Once the image is built once, comment the block above and
+    # replace it with:
+    # image: fibonacci-service:latest
+#   volumes:
+#     - ./app:/usr/src/app/app  # mount your local code over the baked-in copy
+
+# The colon (:) is the separator 
+#The first segment is the host path. 
+#The second is where it appears inside the container.
+
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      ORACLE_USER: ${ORACLE_USER}
+      ORACLE_PASSWORD: ${ORACLE_PASSWORD}
+      ORACLE_HOST: oracle-db-api
+      ORACLE_PORT: 1521
+      ORACLE_SERVICE: XEPDB1
+    depends_on:
+      oracle-db:
+        condition: service_healthy
