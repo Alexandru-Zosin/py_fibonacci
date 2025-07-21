@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-import oracledb, os
+import os
 import asyncio
 
 # Import domain logic
@@ -50,6 +50,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
 db = SQLAlchemy(app)
+
 try:
     with app.app_context():
         result = db.session.execute(text("SELECT 'Connection successful!' FROM DUAL")).scalar()
@@ -57,10 +58,6 @@ try:
 except Exception as e:
     print(f"❌ DB connection failed: {e}")
 # ---------------------------
-
-# Create and start the async worker
-loop = asyncio.get_event_loop()
-loop.create_task(start_worker())
 
 # Create and start the async worker
 loop = asyncio.get_event_loop()

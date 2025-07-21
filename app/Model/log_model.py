@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
-db = SQLAlchemy()
+from app.Controller.app import db  
 
 class APILog(db.Model):
     __tablename__ = 'logs'
