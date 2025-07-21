@@ -6,6 +6,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc libaio1 && \
     rm -rf /var/lib/apt/lists/*
 
+#RUN works when building, CMD when using it (starting the container)
+
 # ------------------------------------------------------------------------
 #  Layers that seldom change (keeps rebuilds fast)
 # ------------------------------------------------------------------------

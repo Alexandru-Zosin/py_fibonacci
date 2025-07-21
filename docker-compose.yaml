@@ -11,20 +11,12 @@ services:
       ORACLE_PWD: ${ORACLE_PWD}
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    entrypoint: >
-      /bin/bash -c "
-        # substitute env vars into a real .sql
-        envsubst < /docker-entrypoint-initdb.d/init.sql.tpl \
-                > /docker-entrypoint-initdb.d/init.sql &&
-        # hand off to original entrypoint
-        exec /docker-entrypoint.sh oracle
-      "
     healthcheck:
       test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/${ORACLE_PWD}@localhost:1521/XEPDB1 || exit 1"]
       interval: 30s
       retries: 10
 
-  fibonacci-service:          # service name == container name (no override needed)
+  fibonacci-service: # service name == container name (no override needed)
     build:
       context: .
       dockerfile: Dockerfile
