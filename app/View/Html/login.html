@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Project styles -->
+<link href="{{ url_for('static', filename='Css/login.css') }}" rel="stylesheet">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-icon">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <h3 class="login-title">Welcome Back</h3>
+    </div>
+    <div class="login-body">
+      <form method="POST">
+        <div class="form-floating">
+          <input name="username" class="form-control" id="username" placeholder="Username" required>
+          <label for="username" class="form-label">Username</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+          <button type="button" class="password-toggle" onclick="togglePassword()">
+            <i class="fas fa-eye" id="toggleIcon"></i>
+          </button>
+          <label for="password" class="form-label">Password</label>
+        </div>
+        <button type="submit" class="btn btn-login">
+          <i class="fas fa-sign-in-alt me-2"></i>Sign In
+        </button>
+      </form>
+      <div class="signup-link">
+        <p class="mb-0">Don't have an account? <a href="/auth/register"><i class="fas fa-user-plus me-1"></i>Create one now</a></p>
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+</body>
+</html>

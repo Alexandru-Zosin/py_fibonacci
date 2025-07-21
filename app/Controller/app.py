@@ -16,8 +16,23 @@ from Model.schema import PowerInput, FibonacciInput, FactorialInput
 from Controller.workers import enqueue_task, start_worker
 
 
+dirpath = os.path.abspath(os.path.dirname(__file__))
+project_root = os.path.abspath(os.path.join(dirpath, '..'))
+
+print(project_root)
+print("aaaaaaaaaaaaaaaa")
+
+
 # --- Flask App Setup ---
-app = Flask(__name__, template_folder='../View')
+app = Flask(
+    __name__,
+    template_folder=os.path.join(project_root, 'View', 'Html'),
+    static_folder=os.path.join(project_root, 'View'),
+    static_url_path='/static'
+
+)
+print(os.path.join(project_root, 'View', 'Html'))
+
 CORS(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'super-secret')
 
