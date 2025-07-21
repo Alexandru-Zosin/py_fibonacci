@@ -39,7 +39,7 @@ services:
       ORACLE_PASSWORD: ${ORACLE_PASSWORD}
       ORACLE_HOST: oracle-db-api
       ORACLE_PORT: 1521
-      ORACLE_SERVICE: XEPDB1
+      ORACLE_SERVICE: xepdb1
     depends_on:
       oracle-db:
         condition: service_healthy

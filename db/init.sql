@@ -1,7 +1,6 @@
 --Oracle's image will run any .sql files
 -- mount into /docker-entrypoint-initdb.d on first startup
--- probleme aici
-create user py_app identified by py_app_password 
+create user py_app identified by py_app_password
     default tablespace users
     temporary tablespace temp;
 

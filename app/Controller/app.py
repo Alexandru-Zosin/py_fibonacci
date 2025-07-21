@@ -6,22 +6,18 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-import oracledb
+import oracledb, os
 import asyncio
 
 # Import domain logic
-from Model.problem_model import PowerOperation, FibonacciOperation, FactorialOperation
-from Model.schema import PowerInput, FibonacciInput, FactorialInput
+from app.Model.problem_model import PowerOperation, FibonacciOperation, FactorialOperation
+from app.Model.schema import PowerInput, FibonacciInput, FactorialInput
 #from workers import enqueue_task, start_worker
-from Controller.workers import enqueue_task, start_worker
+from app.Controller.workers import enqueue_task, start_worker
 
 
 dirpath = os.path.abspath(os.path.dirname(__file__))
 project_root = os.path.abspath(os.path.join(dirpath, '..'))
-
-print(project_root)
-print("aaaaaaaaaaaaaaaa")
-
 
 # --- Flask App Setup ---
 app = Flask(
@@ -31,29 +27,35 @@ app = Flask(
     static_url_path='/static'
 
 )
-print(os.path.join(project_root, 'View', 'Html'))
 
 CORS(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'super-secret')
 
 # --- Oracle Database Connection ---
 # Install with: pip install oracledb flask_sqlalchemy
-oracle_user = os.environ.get('ORACLE_USER', 'your_user')
-oracle_pass = os.environ.get('ORACLE_PASSWORD', 'your_password')
-oracle_host = os.environ.get('ORACLE_HOST', 'localhost')
-oracle_port = os.environ.get('ORACLE_PORT', '1521')
-oracle_service = os.environ.get('ORACLE_SERVICE', 'ORCLPDB1')
+oracle_user    = os.environ.get("ORACLE_USER", "py_app")
+oracle_pass    = os.environ.get("ORACLE_PASSWORD", "py_app_password")
+oracle_host    = os.environ.get("ORACLE_HOST", "oracle-db-api")
+oracle_port    = int(os.environ.get("ORACLE_PORT", "1521"))
+oracle_service = os.environ.get("ORACLE_SERVICE", "xepdb1")
 
-# Build DSN and SQLAlchemy URI
-dsn = oracledb.makedsn(oracle_host, int(oracle_port), service_name=oracle_service)
+# build a TNS descriptor with service_name
+
 app.config['SQLALCHEMY_DATABASE_URI'] = (
-    f"oracle+oracledb://{oracle_user}:{oracle_pass}@{dsn}"
+    f"oracle+oracledb://{oracle_user}:{oracle_pass}"
+    f"@oracle-db-api:1521/?service_name=xepdb1"
 )
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
-
 db = SQLAlchemy(app)
+try:
+    with app.app_context():
+        result = db.session.execute(text("SELECT 'Connection successful!' FROM DUAL")).scalar()
+        print(f"✅ DB Test: {result}")
+except Exception as e:
+    print(f"❌ DB connection failed: {e}")
 # ---------------------------
 
 # Create and start the async worker
@@ -139,8 +141,8 @@ def health():
 
 
 # --- Auth Blueprint ---
-from auth_controller import auth_bp
-from Model.user_model import db as user_db
+from app.Controller.auth_controller import auth_bp
+from app.Model.user_model import db as user_db
 
 # Initialize User DB models
 
