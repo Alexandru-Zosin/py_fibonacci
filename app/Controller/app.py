@@ -62,6 +62,7 @@ except Exception as e:
 # Create and start the async worker
 loop = asyncio.get_event_loop()
 loop.create_task(start_worker())
+print(2)
 
 # --- Math Operation Endpoints ---
 @app.route('/pow', methods=['POST'])
