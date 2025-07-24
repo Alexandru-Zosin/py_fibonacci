@@ -1,115 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Math Operations Interface</title>
-  <!-- External libraries -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Project styles -->
-  <link href="{{ url_for('static', filename='Css/dashboard.css') }}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Math Operations Interface</title>
+    <!-- External libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Project styles -->
+    <link href="{{ url_for('static', filename='Css/dashboard.css') }}" rel="stylesheet">
 </head>
+
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <i class="fas fa-calculator me-2"></i>Math API UI
-      </a>
-    </div>
-  </nav>
- 
-  <main class="container my-5">
-    <h1 class="page-title">
-      <i class="fas fa-magic me-3"></i>Execute Math Operations
-    </h1>
-    <div class="row g-4">
-      <!-- Power Form -->
-      <div class="col-lg-4 col-md-6">
-        <div class="card math-card">
-          <div class="card-header">
-            <i class="fas fa-superscript icon-power"></i>
-            Power Function
-          </div>
-          <div class="card-body">
-            <form id="pow-form">
-              <div class="mb-3">
-                <label for="base" class="form-label">
-                  <i class="fas fa-cube me-2"></i>Base
-                </label>
-                <input type="number" step="any" class="form-control" id="base" required placeholder="Enter base value">
-              </div>
-              <div class="mb-3">
-                <label for="exponent" class="form-label">
-                  <i class="fas fa-arrow-up me-2"></i>Exponent
-                </label>
-                <input type="number" step="any" class="form-control" id="exponent" required placeholder="Enter exponent">
-              </div>
-              <button type="submit" class="btn btn-compute w-100">
-                <i class="fas fa-calculator me-2"></i>Compute Power
-              </button>
-            </form>
-            <div class="result-container result-placeholder" id="pow-result">
-              <i class="fas fa-arrow-left me-2"></i>Result will appear here
-            </div>
-          </div>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-calculator me-2"></i>Math API UI
+            </a>
         </div>
-      </div>
- 
-      <!-- Fibonacci Form -->
-      <div class="col-lg-4 col-md-6">
-        <div class="card math-card">
-          <div class="card-header">
-            <i class="fas fa-chart-line icon-fibonacci"></i>
-            Fibonacci Sequence
-          </div>
-          <div class="card-body">
-            <form id="fib-form">
-              <div class="mb-3">
-                <label for="fib-n" class="form-label">
-                  <i class="fas fa-hashtag me-2"></i>Position (n)
-                </label>
-                <input type="number" class="form-control" id="fib-n" required placeholder="Enter position index">
-              </div>
-              <button type="submit" class="btn btn-compute w-100">
-                <i class="fas fa-calculator me-2"></i>Compute Fibonacci
-              </button>
-            </form>
-            <div class="result-container result-placeholder" id="fib-result">
-              <i class="fas fa-arrow-left me-2"></i>Result will appear here
-            </div>
-          </div>
+
+        <!-- Logout button aligned to the right -->
+        <div class="d-flex ms-auto">
+            <a href="{{ url_for('auth.history') }}" class="btn btn-outline-light me-2">
+                <i class="fas fa-history me-1"></i>View History
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
         </div>
-      </div>
- 
-      <!-- Factorial Form -->
-      <div class="col-lg-4 col-md-6">
-        <div class="card math-card">
-          <div class="card-header">
-            <i class="fas fa-exclamation icon-factorial"></i>
-            Factorial Function
-          </div>
-          <div class="card-body">
-            <form id="fact-form">
-              <div class="mb-3">
-                <label for="fact-n" class="form-label">
-                  <i class="fas fa-sort-numeric-up me-2"></i>Integer (n)
-                </label>
-                <input type="number" class="form-control" id="fact-n" required placeholder="Enter integer value">
-              </div>
-              <button type="submit" class="btn btn-compute w-100">
-                <i class="fas fa-calculator me-2"></i>Compute Factorial
-              </button>
-            </form>
-            <div class="result-container result-placeholder" id="fact-result">
-              <i class="fas fa-arrow-left me-2"></i>Result will appear here
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </main>
- 
-  <script src="{{ url_for('static', filename='Script/dashboard.js') }}"></script>
+
+    </nav>
+
+    <main class="container my-5">
+        <h1 class="page-title">
+            <i class="fas fa-magic me-3"></i>Execute Math Operations
+        </h1>
+        <div class="row g-4">
+            <!-- Power Form -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card math-card">
+                    <div class="card-header">
+                        <i class="fas fa-superscript icon-power"></i>
+                        Power Function
+                    </div>
+                    <div class="card-body">
+                        <form id="pow-form">
+                            <div class="mb-3">
+                                <label for="base" class="form-label">
+                                    <i class="fas fa-cube me-2"></i>Base
+                                </label>
+                                <input type="number" step="any" class="form-control" id="base" required
+                                    placeholder="Enter base value">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exponent" class="form-label">
+                                    <i class="fas fa-arrow-up me-2"></i>Exponent
+                                </label>
+                                <input type="number" step="any" class="form-control" id="exponent" required
+                                    placeholder="Enter exponent">
+                            </div>
+                            <button type="submit" class="btn btn-compute w-100">
+                                <i class="fas fa-calculator me-2"></i>Compute Power
+                            </button>
+                        </form>
+                        <div class="result-container result-placeholder" id="pow-result">
+                            <i class="fas fa-arrow-left me-2"></i>Result will appear here
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fibonacci Form -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card math-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line icon-fibonacci"></i>
+                        Fibonacci Sequence
+                    </div>
+                    <div class="card-body">
+                        <form id="fib-form">
+                            <div class="mb-3">
+                                <label for="fib-n" class="form-label">
+                                    <i class="fas fa-hashtag me-2"></i>Position (n)
+                                </label>
+                                <input type="number" class="form-control" id="fib-n" required
+                                    placeholder="Enter position index">
+                            </div>
+                            <button type="submit" class="btn btn-compute w-100">
+                                <i class="fas fa-calculator me-2"></i>Compute Fibonacci
+                            </button>
+                        </form>
+                        <div class="result-container result-placeholder" id="fib-result">
+                            <i class="fas fa-arrow-left me-2"></i>Result will appear here
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Factorial Form -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card math-card">
+                    <div class="card-header">
+                        <i class="fas fa-exclamation icon-factorial"></i>
+                        Factorial Function
+                    </div>
+                    <div class="card-body">
+                        <form id="fact-form">
+                            <div class="mb-3">
+                                <label for="fact-n" class="form-label">
+                                    <i class="fas fa-sort-numeric-up me-2"></i>Integer (n)
+                                </label>
+                                <input type="number" class="form-control" id="fact-n" required
+                                    placeholder="Enter integer value">
+                            </div>
+                            <button type="submit" class="btn btn-compute w-100">
+                                <i class="fas fa-calculator me-2"></i>Compute Factorial
+                            </button>
+                        </form>
+                        <div class="result-container result-placeholder" id="fact-result">
+                            <i class="fas fa-arrow-left me-2"></i>Result will appear here
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='Script/dashboard.js') }}"></script>
 </body>
+
 </html>
