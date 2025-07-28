@@ -1,69 +1,94 @@
-requirements.txt -> Python dependencies
-Dockerfile -> How to build image
-docker-compose.yaml -> How to orchestrate multiple containers
-* the image is already defined by oracle-xe
-a container is built off an image
--------------------------
-Kernel/Operating System: You can have a Windows host and container which uses 
-an image with a Linux (like Ubuntu 22) base but a Python virtual environment uses 
-the host operating system. The only thing a Python venv isolates is itself:
- Python (pip and stuff).
+# Py‑Fibonacci Micro‑service
 
-- also, there is MORE than just Python dependencies. A docker encapsulates the 
-entire OS. (With a Docker image, you can swap out the entire OS -
- install and run Python on Ubuntu, Debian, Alpine, even Windows Server Core.
-There are Docker images out there with every combination of OS and Python versions
- you can think of, ready to pull down and use on any system with Docker installed.)
+A lightweight Flask API that computes Fibonacci, power, and factorial operations, while logging each request to an Oracle XE database. Everything runs in Docker—get started with one command.
 
-Network Setup: A Docker container is isolated and will, by default, 
-not be able to access other containers and other things in the "real" network. 
-A Python virtual environment can since it's just like a regular but isolated
- folder for a project.
+## 1. Project Overview
+- **Model**: Pure‑Python logic (`FibonacciOperation`, `PowerOperation`, `FactorialOperation`) and SQLAlchemy entities (`User`, `APILog`).
+- **View**: Jinja2 templates for login, registration, dashboard, and history.
+- **Controller**: Flask routes (`/pow`, `/fibonacci`, `/factorial`, `/auth/*`) with async task‑offloading via an in‑process worker queue.
+- **Database**: Oracle 21c XE, initialized by `db/init.sql` on container start.
+- **Worker**: `workers.py` processes queued tasks, keeping web threads responsive.
 
----
-Best practice:
-- we NEVER share .venv with teammates. What WE DO is share
-packages you have installed and they install it for their environments  
-Containers (docker ones) are a good solution to this.
+## 2. Prerequisites
+- **Docker** ≥ 20.10
+- **Docker Compose** v2 or `docker-compose`
+- **Oracle Container Registry** account (to pull `oracle.com/database/express:latest`)
 
-Virtual environments bake in absolute paths and OS-specific binaries,
- so they break on a colleague’s machine or CI runner.
+> **Note**: Oracle XE runs in its container—no local install needed.
 
+## 3. Quick Start
+```bash
+git clone https://github.com/Alexandru-Zosin/py_fibonacci.git
+cd py_fibonacci
+cp .env.example .env  # edit with your credentials
+docker compose up --build
+# Visit http://localhost:8000/health to confirm status
+```
+- **Services**:
+  - **oracle-db**: runs Oracle XE, executes `init.sql` to create users and tables.
+  - **fibonacci-service**: waits for DB health, then launches Flask/Gunicorn on port 8000.
+- **Flow**: Requests to `/fibonacci`, `/pow`, or `/factorial` are logged, queued, computed asynchronously, then returned as JSON.
 
-1. requirements.txt: packages & versions
-2. Dockerfile: python version, file mounts, networking
-3. Makefile: build & run of the docker container, passing environment variables
+## 4. Building the Docker Image
+```bash
+docker build -t fibonacci-service:latest .
+```
+- Reuse the image by adding `image: fibonacci-service:latest` in `docker-compose.yml` to skip rebuilds.
 
-- a single Dockerfile... but with a caveat*
-- everyone clones from github and copy . to add app's code and dependencies 
-into the container
-- every developer runs their own instance of the database,
-in isolation from any other developer's concurrent hacking (local sandbox)
-----
-*
-We asked ourselves if we should use Docker when we can work with virtual environments,
-but this answer:
+## 5. Development Mode
+In `docker-compose.yml`:
+```yaml
+fibonacci-service:
+  build: .
+  volumes:
+    - ./app:/usr/src/app/app
+  command: flask --app app.Controller.app --debug run --host 0.0.0.0
+```
+Code changes auto‑reload; remove `volumes:` for production build.
 
-"   For me, I enjoy the fact that I don't have to install apache,
-mysql, mongodb, nginx, oracle, etc on my laptop to work different projects.
-I just write a docker-compose file and spin it up and I have an entire environment
-(usually a replicate of my current client's production environment, and if not, 
-it will be their environment because I can just pass the containers to them).
+## 6. Environment Variables
+| Variable         | Purpose                                              |
+|------------------|------------------------------------------------------|
+| ORACLE_PWD       | SYS/SYSTEM password on first boot                    |
+| ORACLE_USER      | Application DB user (from `init.sql`)                |
+| ORACLE_PASSWORD  | Password for `ORACLE_USER`                           |
+| ORACLE_HOST      | DB host (Docker service name)                        |
+| ORACLE_PORT      | DB listener port (default 1521)                      |
+| ORACLE_SERVICE   | PDB service name (e.g., `xepdb1`)                    |
 
-    And when I am done, I just turn it off and I don't have all those apps installed
-that I may never use again." 
+Place them in `.env` so both services inherit them.
 
-made us do it and just modify to mount the code locally when developing.
+## 7. API Endpoints
+| Endpoint       | Method | Body                        | Response      |
+|----------------|--------|-----------------------------|---------------|
+| `/pow`         | POST   | `{ "base": 2, "exponent": 10 }` | `1024`        |
+| `/fibonacci`   | POST   | `{ "n": 15 }`             | `610`         |
+| `/factorial`   | POST   | `{ "n": 7 }`              | `5040`        |
+| `/auth/*`      | GET/POST | Form data                 | User/session  |
+| `/health`      | GET    | —                           | `{ "status":"up","db":1 }` |
 
+## 8. Project Structure
+```
+├── app
+│   ├── Controller
+│   │   ├── app.py
+│   │   └── auth_controller.py
+│   ├── Model
+│   │   ├── problem_model.py
+│   │   ├── user_model.py
+│   │   └── log_model.py
+│   ├── View
+│   │   ├── Html/…
+│   │   └── static/…
+│   └── workers.py
+├── db/init.sql
+├── Dockerfile
+├── docker-compose.yml
+└── .env.example
+```
 
---- In essence, the dockerfile should only change between dev/prod from the pov of
-mounting the code locally or not.
+## 9. Troubleshooting
+- **`unauthorized: authentication required`**: Run `docker login container-registry.oracle.com`.
+- **`ORA-12541: TNS:no listener`**: DB not ready—run `docker compose ps` and wait for `healthy`.
+- **Health check `db-error`**: Verify `init.sql` ran and credentials in `.env` match.
 
-"you definitely want to have only one dockerfile for both/all environments 
-(dev,qa,stg,etc). Separate dockerfiles is a bad practice. 
-If you are mounting your code locally when developing, that's fine.
-
-Have the dockerfile COPY your app code to it's destination and ship that to your 
-registry once built. For local development you'll run that same container 
-image with the addition of args/config to mount your local code, superseding 
-the code the COPY command added in."
