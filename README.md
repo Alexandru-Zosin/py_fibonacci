@@ -4,6 +4,8 @@ A lightweight Flask API that computes Fibonacci, power, and factorial operations
 
 **Chirila Sabin** - development of 3 API endpoints for mathematical operations: power, factorial, and Fibonacci. I used Pydantic for input data validation, ensuring they are positive integers. I implemented asynchronous operation execution, using **asyncio** and a queue (asyncio.Queue) with a background worker for parallel processing. Each request is logged in the Oracle database.
 
+**Rares-Stefan Cazan** - delivered the end-to-end delivery of this microservice suite by crafting all responsive front-end interfaces (login, registration, and dashboard); building secure login and registration REST endpoints; architecting an Oracle-backed persistence layer via SQLAlchemy; structuring everything in a clean MVC pattern with views, controllers, and models; exposing APIs while capturing each user’s request history, and integrating async workers, authentication flows, and database operations into a production-ready, cohesive microservice solution.
+
 ## 1. Project Overview
 - **Model**: Pure‑Python logic (`FibonacciOperation`, `PowerOperation`, `FactorialOperation`) and SQLAlchemy entities (`User`, `APILog`).
 - **View**: Jinja2 templates for login, registration, dashboard, and history.
