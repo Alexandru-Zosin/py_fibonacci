@@ -2,7 +2,7 @@
 
 A lightweight Flask API that computes Fibonacci, power, and factorial operations, while logging each request to an Oracle XE database. Everything runs in Docker—get started with one command.
 
-**Chirila Sabin** - dezvoltarea a 3 endpoint-uri API pentru operațiile matematice: putere, factorial și Fibonacci. Am folosit Pydantic pentru validarea datelor de intrare, asigurând că sunt întregi pozitive. Am implementat execuția operațiilor asincron, folosind **asyncio** și o coadă (asyncio.Queue) cu worker în fundal pentru procesare paralelă. Fiecare cerere este logată în baza de date Oracle.
+**Chirila Sabin** - development of 3 API endpoints for mathematical operations: power, factorial, and Fibonacci. I used Pydantic for input data validation, ensuring they are positive integers. I implemented asynchronous operation execution, using **asyncio** and a queue (asyncio.Queue) with a background worker for parallel processing. Each request is logged in the Oracle database.
 
 ## 1. Project Overview
 - **Model**: Pure‑Python logic (`FibonacciOperation`, `PowerOperation`, `FactorialOperation`) and SQLAlchemy entities (`User`, `APILog`).
