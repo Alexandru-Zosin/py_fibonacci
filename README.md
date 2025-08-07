@@ -6,6 +6,9 @@ A lightweight Flask API that computes Fibonacci, power, and factorial operations
 
 **Rares-Stefan Cazan** - delivered the end-to-end delivery of this microservice suite by crafting all responsive front-end interfaces (login, registration, and dashboard); building secure login and registration REST endpoints; architecting an Oracle-backed persistence layer via SQLAlchemy; structuring everything in a clean MVC pattern with views, controllers, and models; exposing APIs while capturing each user’s request history, and integrating async workers, authentication flows, and database operations into a production-ready, cohesive microservice solution.
 
+**Alexandru Zosin** - I containerized and orchestrated applications using only Docker CLI and Docker Compose—resolving paths and dependencies to ensure flawless, consistent development environments on everyone's machine. An OracleDB image is needed. I also managed db creation and connection. 
+Overall, Real Python resources proved extremely helpful for the development of this project.
+
 ## 1. Project Overview
 - **Model**: Pure‑Python logic (`FibonacciOperation`, `PowerOperation`, `FactorialOperation`) and SQLAlchemy entities (`User`, `APILog`).
 - **View**: Jinja2 templates for login, registration, dashboard, and history.
