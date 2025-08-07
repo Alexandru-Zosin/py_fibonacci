@@ -8,6 +8,7 @@ A lightweight Flask API that computes Fibonacci, power, and factorial operations
 
 **Alexandru Zosin** - I containerized and orchestrated applications using only Docker CLI and Docker Compose—resolving paths and dependencies to ensure flawless, consistent development environments on everyone's machine. An OracleDB image is needed. I also managed db creation and connection. 
 Overall, Real Python resources proved extremely helpful for the development of this project.
+- I also included 2_intermediate.py (not related to the OOP project, but part of my python training homeworks)
 
 ## 1. Project Overview
 - **Model**: Pure‑Python logic (`FibonacciOperation`, `PowerOperation`, `FactorialOperation`) and SQLAlchemy entities (`User`, `APILog`).
